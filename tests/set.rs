@@ -61,13 +61,17 @@ fn test_set_capital() {
 
     c.set_default("tHiS", false).unwrap();
     c.set("THAT", true).unwrap();
-    c.merge(File::from_str("{\"loGleVel\": 5}", FileFormat::Json))
-        .unwrap();
+    c.set("loGleVel", 5).unwrap();
+    // c.merge(File::from_str("{\"loGleVel\": 5}", FileFormat::Json))
+    //     .unwrap();
 
-    assert_eq!(c.get("this").ok(), Some(false));
-    assert_eq!(c.get("ThIs").ok(), Some(false));
-    assert_eq!(c.get("that").ok(), Some(true));
-    assert_eq!(c.get("THAT").ok(), Some(true));
-    assert_eq!(c.get("logLevel").ok(), Some(5));
-    assert_eq!(c.get("loglevel").ok(), Some(5));
+    println!("{:?}", c);
+
+    assert_eq!(c.get_bool("this").ok(), None);
+    assert_eq!(c.get_bool("tHiS").ok(), Some(false));
+    assert_eq!(c.get_bool("that").ok(), None);
+    assert_eq!(c.get_bool("THAT").ok(), Some(true));
+    assert_eq!(c.get_int("loGleVel").ok(), Some(5));
+    assert_eq!(c.get_int("logLevel").ok(), None);
+    assert_eq!(c.get_int("loglevel").ok(), None);
 }

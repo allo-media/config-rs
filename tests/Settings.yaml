@@ -8,5 +8,6 @@ place:
   favorite: false
   reviews: 3866
   rating: 4.5
+  latestReview: Great!
   creator:
     name: John Smith

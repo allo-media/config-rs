@@ -1,6 +1,6 @@
 extern crate config;
-extern crate serde;
 extern crate float_cmp;
+extern crate serde;
 
 #[macro_use]
 extern crate serde_derive;
@@ -19,6 +19,7 @@ struct Place {
     reviews: u64,
     creator: HashMap<String, Value>,
     rating: Option<f32>,
+    #[serde(rename = "latestReview")] latest_review: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -26,8 +27,7 @@ struct Settings {
     debug: f64,
     production: Option<String>,
     place: Place,
-    #[serde(rename = "arr")]
-    elements: Vec<String>,
+    #[serde(rename = "arr")] elements: Vec<String>,
 }
 
 fn make() -> Config {
@@ -43,7 +43,7 @@ fn test_file() {
     let c = make();
 
     // Deserialize the entire file as single struct
-    let s: Settings = c.deserialize().unwrap();
+    let s: Settings = c.try_into().unwrap();
 
     assert!(s.debug.approx_eq_ulps(&1.0, 2));
     assert_eq!(s.production, Some("false".to_string()));
@@ -54,6 +54,7 @@ fn test_file() {
     assert_eq!(s.place.reviews, 3866);
     assert_eq!(s.place.rating, Some(4.5));
     assert_eq!(s.place.telephone, None);
+    assert_eq!(s.place.latest_review, "Great!");
     assert_eq!(s.elements.len(), 10);
     assert_eq!(s.elements[3], "4".to_string());
     assert_eq!(

@@ -118,7 +118,7 @@ impl Config {
             ConfigKind::Mutable {
                 ref mut defaults, ..
             } => {
-                defaults.insert(key.to_lowercase().parse()?, value.into());
+                defaults.insert(key.parse()?, value.into());
             }
 
             ConfigKind::Frozen => return Err(ConfigError::Frozen),
@@ -135,7 +135,7 @@ impl Config {
             ConfigKind::Mutable {
                 ref mut overrides, ..
             } => {
-                overrides.insert(key.to_lowercase().parse()?, value.into());
+                overrides.insert(key.parse()?, value.into());
             }
 
             ConfigKind::Frozen => return Err(ConfigError::Frozen),
@@ -146,7 +146,7 @@ impl Config {
 
     pub fn get<'de, T: Deserialize<'de>>(&self, key: &'de str) -> Result<T> {
         // Parse the key into a path expression
-        let expr: path::Expression = key.to_lowercase().parse()?;
+        let expr: path::Expression = key.parse()?;
 
         // Traverse the cache using the path to (possibly) retrieve a value
         let value = expr.get(&self.cache).cloned();
@@ -190,7 +190,7 @@ impl Config {
         T::deserialize(self)
     }
 
-    #[deprecated(since="0.7.0", note="please use 'try_into' instead")]
+    #[deprecated(since = "0.7.0", note = "please use 'try_into' instead")]
     pub fn deserialize<'de, T: Deserialize<'de>>(self) -> Result<T> {
         self.try_into()
     }

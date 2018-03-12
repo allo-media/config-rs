@@ -21,6 +21,7 @@ latitude = 10.3970522
 favorite = false
 reviews = 3866
 rating = 4.5
+latestReview = "Great!"
 
 [place.creator]
 name = "John Smith"

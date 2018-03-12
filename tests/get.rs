@@ -1,6 +1,6 @@
 extern crate config;
-extern crate serde;
 extern crate float_cmp;
+extern crate serde;
 
 #[macro_use]
 extern crate serde_derive;
@@ -18,6 +18,7 @@ struct Place {
     telephone: Option<String>,
     reviews: u64,
     rating: Option<f32>,
+    #[serde(rename = "latestReview")] latest_review: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -107,7 +108,7 @@ fn test_map() {
     let c = make();
     let m: HashMap<String, Value> = c.get("place").unwrap();
 
-    assert_eq!(m.len(), 7);
+    assert_eq!(m.len(), 8);
     assert_eq!(
         m["name"].clone().into_str().unwrap(),
         "Torre di Pisa".to_string()
@@ -134,7 +135,7 @@ fn test_map_struct() {
     let c = make();
     let s: Settings = c.try_into().unwrap();
 
-    assert_eq!(s.place.len(), 7);
+    assert_eq!(s.place.len(), 8);
     assert_eq!(
         s.place["name"].clone().into_str().unwrap(),
         "Torre di Pisa".to_string()
@@ -158,6 +159,7 @@ fn test_file_struct() {
     assert_eq!(s.place.reviews, 3866);
     assert_eq!(s.place.rating, Some(4.5));
     assert_eq!(s.place.telephone, None);
+    assert_eq!(s.place.latest_review, "Great!");
 }
 
 #[test]
@@ -190,8 +192,7 @@ fn test_array_scalar() {
 fn test_struct_array() {
     #[derive(Debug, Deserialize)]
     struct Settings {
-        #[serde(rename = "arr")]
-        elements: Vec<String>,
+        #[serde(rename = "arr")] elements: Vec<String>,
     }
 
     let c = make();
